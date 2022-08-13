@@ -18,27 +18,45 @@ void Parser::Parse() {
 
 		if (tokens[1] == "string") {
 			variables[tokens[2]]->type = STRING;
-			variables[tokens[2]]->sValue = tokens[3];
+			variables[tokens[2]]->sValue = getStringFromQuotes(tokens[3], 1);
 		}
 	}
 
 	if (tokens[0] == "print") {
 		//std::cout << "FOUND print function \n";
-		if (tokens[1] == "\"") {
-			int i = 0;
-			for (; i < tokens.size(); i++) {
-				if (tokens[i] == "\"") break;
-			}
-			for (int k = i+1; k < tokens.size(); k++) {
-				if (tokens[k] == "\"") break;
-				std::cout << tokens[k] << " ";
-			}
 
+		if (tokens[1][0] == '\"') {
+			std::cout << getStringFromQuotes(tokens[1], 1);
 		}
-		else {
+
+		if (std::isalpha(tokens[1][0])) {
 			if (variables[tokens[1]]->type == INT) std::cout << variables[tokens[1]]->iValue;
 			else if (variables[tokens[1]]->type == STRING) std::cout << variables[tokens[1]]->sValue;
 		}
+
+		if (std::isdigit(tokens[1][0])) {
+			std::cout << tokens[1];
+		}
+
+		//Check for more print arguments
+		for (int i = 1; i < tokens.size(); i++)
+		{
+			if (tokens[i] == ",") {
+				if (tokens[i+1][0] == '\"') {
+					std::cout << getStringFromQuotes(tokens[i+1], 1);
+				}
+
+				if (std::isalpha(tokens[i+1][0])) {
+					if (variables[tokens[i+1]]->type == INT) std::cout << variables[tokens[i+1]]->iValue;
+					else if (variables[tokens[i+1]]->type == STRING) std::cout << variables[tokens[i+1]]->sValue;
+				}
+
+				if (std::isdigit(tokens[i+1][0])) {
+					std::cout << tokens[i+1];
+				}
+			}
+		}
+
 	}
 
 }

@@ -1,9 +1,7 @@
 #pragma once
 #include <iostream>
-#include <vector>
-#include <string>
 #include <map>
-#include <algorithm>
+#include "FunctionUtilities.h"
 
 class Parser final {
 private:

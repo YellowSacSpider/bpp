@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "FunctionUtilities.h"
 
 
 void Lexer::Advance() {
@@ -12,6 +13,17 @@ void Lexer::Check() {
 	}
 	switch (*textptr)
 	{
+	//Make string
+	case '\"':
+		token += '\"';
+		while (true) {
+			if (*(++textptr) != '\"') token += *textptr;
+			else break;
+		}
+		token += '\"';
+		tokens.emplace_back(token);
+		token.clear();
+		break;
 	case '+':
 	case '-':
 	case '*':
@@ -21,7 +33,29 @@ void Lexer::Check() {
 	case ')':
 	case '[':
 	case ']':
-	case '\"':
+	case '{':
+	case '}':
+	case ',':
+	case '.':
+	case '!':
+	case '?':
+	case '@':
+	case '#':
+	case '$':
+	case '^':
+	case '&':
+	case '_':
+	case '=':
+	case '`':
+	case '~':
+	case ';':
+	case '\'':
+	case ':':
+	case '|':
+	case '<':
+	case '>':
+	case '\\':
+	case '//':
 		token = *textptr;
 		tokens.emplace_back(token);
 		token.clear();
@@ -89,8 +123,7 @@ void Lexer::Check() {
 	case 'Y':
 	case 'Z':
 		token += *textptr;
-		if (*(textptr + 1) == '+' || *(textptr + 1) == '-' || *(textptr + 1) == '*' || *(textptr + 1) == '/' || *(textptr + 1) == ' ' || *(textptr + 1) == '\t' || *(textptr + 1) == '\"')
-		{
+		if (!std::isalnum(*(textptr + 1))) {
 			tokens.emplace_back(token);
 			token.clear();
 		}
