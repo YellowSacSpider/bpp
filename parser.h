@@ -9,12 +9,14 @@ private:
 		INT,
 		STRING
 	};
-
 	struct Variable {
 		int type;
 		int iValue;
 		std::string sValue;
 	};
+
+	int lValue;
+	int rValue;
 
 	std::vector<std::string> tokens;
 	std::map<std::string, std::unique_ptr<Variable>> variables;

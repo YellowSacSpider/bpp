@@ -9,6 +9,24 @@ void Parser::Parse() {
 		//std::cout << "With name: " << tokens[2] << "\n";
 		//std::cout << "With value: " << tokens[3] << "\n";
 
+
+
+		//	CHECK ARITHMETIC BEFORE PUSH VARIABLE TO THE STACK
+		//	TODO: MAKE IT BETTER ->
+		//	1. GENERIC EVALUATION
+
+		if (!tokens[4].empty()) {
+			if (std::isalpha(tokens[3][0])) lValue = variables[tokens[3]]->iValue;
+			else lValue = std::stoi(tokens[3]);
+			if (std::isalpha(tokens[5][0])) rValue = variables[tokens[5]]->iValue;
+			else lValue = std::stoi(tokens[5]);
+				if (tokens[4] == "/") tokens[3] = std::to_string(lValue / rValue);
+				else if (tokens[4] == "*") tokens[3] = std::to_string(lValue * rValue);
+				else if (tokens[4] == "-") tokens[3] = std::to_string(lValue - rValue);
+				else if (tokens[4] == "+") tokens[3] = std::to_string(lValue + rValue);
+				tokens.erase(tokens.begin()+4, tokens.begin()+5);
+			}
+
 		variables.insert(std::pair<std::string, std::unique_ptr<Variable>>(tokens[2], std::make_unique<Variable>()));
 		
 		if (tokens[1] == "int") {
@@ -18,7 +36,7 @@ void Parser::Parse() {
 
 		if (tokens[1] == "string") {
 			variables[tokens[2]]->type = STRING;
-			variables[tokens[2]]->sValue = getStringFromQuotes(tokens[3], 1);
+			variables[tokens[2]]->sValue = getStringFromQuotes(tokens[3], 1); // THIS PROBABLY SHOULD BE IN A LEXER
 		}
 	}
 
@@ -43,7 +61,7 @@ void Parser::Parse() {
 		{
 			if (tokens[i] == ",") {
 				if (tokens[i+1][0] == '\"') {
-					std::cout << getStringFromQuotes(tokens[i+1], 1);
+					std::cout << getStringFromQuotes(tokens[i+1], 1); // THIS PROBABLY SHOULD BE IN A LEXER
 				}
 
 				if (std::isalpha(tokens[i+1][0])) {

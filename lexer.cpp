@@ -14,6 +14,7 @@ void Lexer::Check() {
 	switch (*textptr)
 	{
 	//Make string
+	// TODO: MAKE IT BETTER
 	case '\"':
 		token += '\"';
 		while (true) {
