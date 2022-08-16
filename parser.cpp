@@ -15,6 +15,7 @@ void Parser::Parse() {
 		//	TODO: MAKE IT BETTER ->
 		//	1. GENERIC EVALUATION
 
+		/*
 		if (!tokens[4].empty()) {
 			if (std::isalpha(tokens[3][0])) lValue = variables[tokens[3]]->iValue;
 			else lValue = std::stoi(tokens[3]);
@@ -26,7 +27,57 @@ void Parser::Parse() {
 				else if (tokens[4] == "+") tokens[3] = std::to_string(lValue + rValue);
 				tokens.erase(tokens.begin()+4, tokens.begin()+5);
 			}
+			*/
 
+		// dumb negative number conversion
+		if (tokens[3] == "-") {
+			tokens[3] = tokens[3] + tokens[4];
+			tokens.erase(tokens.begin() + 4);
+		}
+		while (true) {
+			if (tokens[4].empty()) break;
+			for (int i = 3; i < tokens.size()+1; i++) {
+				if (tokens[i] == "/") {
+					if (tokens[i+1] == "-") {
+						tokens[i+1] = tokens[i+1] + tokens[i+2];
+						tokens.erase(tokens.begin() + i+2);
+					}
+					lValue = std::stoi(tokens[i - 1]);
+					rValue = std::stoi(tokens[i + 1]);
+					tokens[i - 1] = std::to_string(lValue / rValue);
+					tokens.erase(tokens.begin() + i, tokens.begin() + i + 2);
+					break;
+				}
+				else if (tokens[i] == "*") {
+					if (tokens[i + 1] == "-") {
+						tokens[i + 1] = tokens[i + 1] + tokens[i + 2];
+						tokens.erase(tokens.begin() + i + 2);
+					}
+					lValue = std::stoi(tokens[i - 1]);
+					rValue = std::stoi(tokens[i + 1]);
+					tokens[i - 1] = std::to_string(lValue * rValue);
+					tokens.erase(tokens.begin() + i, tokens.begin() + i + 2);
+					break;
+				}
+				if (std::find(tokens.begin(), tokens.end(), "*") == tokens.end() && std::find(tokens.begin(), tokens.end(), "/") == tokens.end()) {
+					if (tokens[i] == "-") {
+						lValue = std::stoi(tokens[i - 1]);
+						rValue = std::stoi(tokens[i + 1]);
+						tokens[i - 1] = std::to_string(lValue - rValue);
+						tokens.erase(tokens.begin() + i, tokens.begin() + i + 2);
+						break;
+					}
+					else if (tokens[i] == "+") {
+						lValue = std::stoi(tokens[i - 1]);
+						rValue = std::stoi(tokens[i + 1]);
+						tokens[i - 1] = std::to_string(lValue + rValue);
+						tokens.erase(tokens.begin() + i, tokens.begin() + i + 2);
+						break;
+					}
+				}
+			}
+
+		}
 		variables.insert(std::pair<std::string, std::unique_ptr<Variable>>(tokens[2], std::make_unique<Variable>()));
 		
 		if (tokens[1] == "int") {
