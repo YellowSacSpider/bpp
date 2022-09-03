@@ -64,6 +64,7 @@ void Parser::Parse() {
 			}
 		}
 
+		// TODO: This loop takes more/less operations than we expected
 		for (const auto& val : args) {
 			if (std::isdigit(args[1][0]) || !std::isalpha(args[1][0])) {
 				Calculate(args);
@@ -169,6 +170,7 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 	}
 
 	// Get matched parenthesis and calculate inside parenthesis
+	// TODO: REWRITE THIS IS NOT WORK WITH NESTED PARENTHESIS
 	if (from == -1 && to == -1) {
 		std::deque<int> parenthesis_open;
 		std::deque<int> parenthesis_closed;
