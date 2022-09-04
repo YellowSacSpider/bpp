@@ -58,7 +58,7 @@ void Parser::Parse() {
 
 		for (int i = 0; i < args.size(); i++) {
 			if (args[i][0] == '\"') args[i] = getStringFromQuotes(args[i], 1);
-			if (std::isalpha(args[i][0])) {
+			if (std::isalpha(args[i][0]) && args[i][0] != '\"') {
 				if (variables[args[i]]->type == INT) args[i] = std::to_string(variables[args[i]]->iValue);
 				else if (variables[args[i]]->type == STRING) args[i] = variables[args[i]]->sValue;
 			}
@@ -75,7 +75,7 @@ void Parser::Parse() {
 
 		for (const auto& val : args) {
 
-			std::cout << val << "\n";
+			std::cout << val;
 		}
 
 
@@ -172,26 +172,25 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 	// Get matched parenthesis and calculate inside parenthesis
 	// TODO: REWRITE THIS IS NOT WORK WITH NESTED PARENTHESIS
 	if (from == -1 && to == -1) {
-		std::deque<int> parenthesis_open;
-		std::deque<int> parenthesis_closed;
+		std::vector<int> parenthesis;
+		std::vector<std::pair<int,int>> parenthesis_pair;
 		for (int i = 0; i < _tokens.size(); i++) {
 			if (_tokens[i] == "(") {
-				parenthesis_open.push_back(i);
+				parenthesis.push_back(i);
 				//std::cout << i;
 			}
 			else if (_tokens[i] == ")") {
-				parenthesis_closed.push_back(i);
+				auto p1 = std::make_pair(parenthesis.back(), i);
+				parenthesis.pop_back();
 				//std::cout << i;
 			}
 			//std::cout << "\n";
 		}
-		while (!parenthesis_open.empty() && !parenthesis_closed.empty()){
-			Calculate(_tokens,parenthesis_open.back(), parenthesis_closed.back());
+		for (const auto& val : parenthesis_pair) {
+			Calculate(_tokens, val.first, val.second);
+			}
 			//for (int i = 0; i < _tokens.size(); i++)
 				//std::cout << _tokens[i];
-			parenthesis_open.pop_back();
-			parenthesis_closed.pop_back();
-		}
 		for (int i = 0; i < _tokens.size(); i++) {
 			if(_tokens[i] == "(" || _tokens[i] == ")") _tokens.erase(_tokens.begin() + i);
 		}
