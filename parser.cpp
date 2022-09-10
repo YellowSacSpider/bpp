@@ -57,7 +57,6 @@ void Parser::Parse() {
 
 
 		for (int i = 0; i < args.size(); i++) {
-			if (args[i][0] == '\"') args[i] = getStringFromQuotes(args[i], 1);
 			if (std::isalpha(args[i][0]) && args[i][0] != '\"') {
 				if (variables[args[i]]->type == INT) args[i] = std::to_string(variables[args[i]]->iValue);
 				else if (variables[args[i]]->type == STRING) args[i] = variables[args[i]]->sValue;
@@ -65,17 +64,15 @@ void Parser::Parse() {
 		}
 
 		// TODO: This loop takes more/less operations than we expected
-		for (const auto& val : args) {
-			if (std::isdigit(args[1][0]) || !std::isalpha(args[1][0])) {
-				Calculate(args);
-				Calculate(args, 0, args.size());
-			}
+		while (std::find(args.begin(), args.end(), "/") != args.end() || std::find(args.begin(), args.end(), "*") != args.end() || std::find(args.begin(), args.end(), "+") != args.end() || std::find(args.begin(), args.end(), "-") != args.end()) {
+					Calculate(args);
+					Calculate(args, 0, args.size());
 		}
 
 
-		for (const auto& val : args) {
-
-			std::cout << val;
+		for (auto& val : args) {
+			if (val[0] == '\"') std::cout << getStringFromQuotes(val, 1);
+			else std::cout << val;
 		}
 
 
