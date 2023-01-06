@@ -51,7 +51,9 @@ void Parser::Parse() {
 		std::vector<std::string> args;
 		// Get args for print
 		for (int i = 1; i < tokens.size(); i++) {
-			if (tokens[i] != ",") args.emplace_back(tokens[i]);
+			if (tokens[i] != ",") {
+				args.emplace_back(tokens[i]);
+			}
 
 		}
 
@@ -68,7 +70,6 @@ void Parser::Parse() {
 					Calculate(args);
 					Calculate(args, 0, args.size());
 		}
-
 
 		for (auto& val : args) {
 			if (val[0] == '\"') std::cout << getStringFromQuotes(val, 1);
@@ -167,7 +168,7 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 	}
 
 	// Get matched parenthesis and calculate inside parenthesis
-	// TODO: REWRITE THIS IS NOT WORK WITH NESTED PARENTHESIS
+	// TODO: REWRITE THIS IS NOT WORK WITH NESTED PARENTHESIS -> Probably solved
 	if (from == -1 && to == -1) {
 		std::vector<int> parenthesis;
 		std::vector<std::pair<int,int>> parenthesis_pair;
@@ -179,13 +180,14 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 			else if (_tokens[i] == ")") {
 				auto p1 = std::make_pair(parenthesis.back(), i);
 				parenthesis.pop_back();
+				parenthesis_pair.push_back(p1);
 				//std::cout << i;
 			}
 			//std::cout << "\n";
 		}
 		for (const auto& val : parenthesis_pair) {
 			Calculate(_tokens, val.first, val.second);
-			}
+		}
 			//for (int i = 0; i < _tokens.size(); i++)
 				//std::cout << _tokens[i];
 		for (int i = 0; i < _tokens.size(); i++) {
