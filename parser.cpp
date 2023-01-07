@@ -33,7 +33,7 @@ void Parser::Parse() {
 		while (!tokens[4].empty()) {
 			Calculate(tokens, 3, tokens.size());
 		}
-		variables.insert(std::pair<std::string, std::unique_ptr<Variable>>(tokens[2], std::make_unique<Variable>()));
+		variables.emplace(std::pair<std::string, std::unique_ptr<Variable>>(tokens[2], std::make_unique<Variable>()));
 		
 		if (tokens[1] == "int") {
 			variables[tokens[2]]->type = INT;
@@ -204,8 +204,8 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 				}
 				//std::cout << "\n";
 			}
+			_tokens.erase(_tokens.begin() + parenthesis_pair[0].second);
 			_tokens.erase(_tokens.begin() + parenthesis_pair[0].first);
-			_tokens.erase(_tokens.begin() + parenthesis_pair[0].second-1);
 			parenthesis.clear();
 			parenthesis_pair.clear();
 			for (int i = 0; i < _tokens.size(); i++) {
@@ -223,7 +223,9 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 			}
 		}
 		//std::cout << _tokens[0];
-		
+		for (int i = 0; i < _tokens.size(); i++) {
+			if (_tokens[i] == "(" || _tokens[i] == ")") _tokens.erase(_tokens.begin() + i);
+		}
 		//FOR DEBUG PARSING
 		for (int i = 0; i < _tokens.size(); i++) {
 			std::cout << _tokens[i];
@@ -236,9 +238,6 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 		//}
 			//for (int i = 0; i < _tokens.size(); i++)
 				//std::cout << _tokens[i];
-		//for (int i = 0; i < _tokens.size(); i++) {
-			//if(_tokens[i] == "(" || _tokens[i] == ")") _tokens.erase(_tokens.begin() + i);
-		//}
 
 	}
 

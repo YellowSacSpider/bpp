@@ -10,9 +10,9 @@ private:
 		STRING
 	};
 	struct Variable {
-		int type;
-		int iValue;
-		std::string sValue;
+		int type = 0;
+		int iValue = 0;
+		std::string sValue = "";
 	};
 
 	int lValue = 0;
