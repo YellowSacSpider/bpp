@@ -168,7 +168,7 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 	}
 
 	// Get matched parenthesis and calculate inside parenthesis
-	// TODO: REWRITE THIS IS NOT WORK WITH NESTED PARENTHESIS -> Probably solved
+	// TODO: REWRITE THIS IS NOT WORK WITH NESTED PARENTHESIS -> To rewrite
 	if (from == -1 && to == -1) {
 		std::vector<int> parenthesis;
 		std::vector<std::pair<int,int>> parenthesis_pair;
@@ -185,16 +185,61 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 			}
 			//std::cout << "\n";
 		}
-		for (const auto& val : parenthesis_pair) {
-			Calculate(_tokens, val.first, val.second);
+
+		while (true) {
+			if (parenthesis_pair.empty()) break;
+			Calculate(_tokens, parenthesis_pair[0].first, parenthesis_pair[0].second);
+			parenthesis.clear();
+			parenthesis_pair.clear();
+			for (int i = 0; i < _tokens.size(); i++) {
+				if (_tokens[i] == "(") {
+					parenthesis.push_back(i);
+					//std::cout << i;
+				}
+				else if (_tokens[i] == ")") {
+					auto p1 = std::make_pair(parenthesis.back(), i);
+					parenthesis.pop_back();
+					parenthesis_pair.push_back(p1);
+					//std::cout << i;
+				}
+				//std::cout << "\n";
+			}
+			_tokens.erase(_tokens.begin() + parenthesis_pair[0].first);
+			_tokens.erase(_tokens.begin() + parenthesis_pair[0].second-1);
+			parenthesis.clear();
+			parenthesis_pair.clear();
+			for (int i = 0; i < _tokens.size(); i++) {
+				if (_tokens[i] == "(") {
+					parenthesis.push_back(i);
+					//std::cout << i;
+				}
+				else if (_tokens[i] == ")") {
+					auto p1 = std::make_pair(parenthesis.back(), i);
+					parenthesis.pop_back();
+					parenthesis_pair.push_back(p1);
+					//std::cout << i;
+				}
+				//std::cout << "\n";
+			}
 		}
+		//std::cout << _tokens[0];
+		
+		//FOR DEBUG PARSING
+		for (int i = 0; i < _tokens.size(); i++) {
+			std::cout << _tokens[i];
+		}
+		std::cout << "\n";
+		//
+
+		//for (const auto& val : parenthesis_pair) {
+			//Calculate(_tokens, val.first, val.second);
+		//}
 			//for (int i = 0; i < _tokens.size(); i++)
 				//std::cout << _tokens[i];
-		for (int i = 0; i < _tokens.size(); i++) {
-			if(_tokens[i] == "(" || _tokens[i] == ")") _tokens.erase(_tokens.begin() + i);
-		}
-		//for (int i = 0; i < _tokens.size(); i++)
-				//std::cout << _tokens[i];
+		//for (int i = 0; i < _tokens.size(); i++) {
+			//if(_tokens[i] == "(" || _tokens[i] == ")") _tokens.erase(_tokens.begin() + i);
+		//}
+
 	}
 
 	//************************
@@ -229,8 +274,10 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 				else if (_tokens[i] == "-") {
 					for (int j = from; j < to; j++) {
 						if (_tokens[j] == "*" || _tokens[j] == "/")
-							found = 1;
-							break;
+							{
+								found = 1;
+								break;
+							}
 						}
 					if (!found) {
 						lValue = std::stoi(_tokens[i - 1]);
@@ -244,8 +291,10 @@ void Parser::Calculate(std::vector<std::string>& _tokens, int from, int to) {
 				else if (_tokens[i] == "+") {
 							for (int j = from; j < to; j++) {
 								if (_tokens[j] == "*" || _tokens[j] == "/")
+								{
 									found = 1;
 									break;
+								}
 							}
 							if(!found){
 								lValue = std::stoi(_tokens[i - 1]);
